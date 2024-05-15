@@ -1,3 +1,12 @@
+//Inloggnings endpoint
+//Sortering, meddelande, datum
+//POST username, password
+//POST user login
+//POST channel
+//GET chanel (se meddelanden)
+//POST subscribe
+//POST message
+
 const sqlite = require("sqlite3").verbose();
 
 const initDatabase = () => {
