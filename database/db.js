@@ -40,9 +40,25 @@ const initDatabase = () => {
   })
   } 
 const sql_user = `CREATE TABLE IF NOT EXISTS users (
-  userId INTEGER PRIMARY KEY, userName VARCHAR(20), password TEXT)`;
-const sql_channel = `CREATE TABLE IF NOT EXISTS channels ( channelId INTEGER PRIMARY KEY, channelName VARCHAR(20), ownerId INTEGER, FOREIGN KEY(ownerId) REFERENCES users(userId))`;
-const sql_message = `CREATE TABLE IF NOT EXISTS messages ( messageId INTEGER PRIMARY KEY, message TEXT, createdAt DATE)`;
+    userId INTEGER PRIMARY KEY,
+    userName VARCHAR(20),
+    password TEXT
+) `;
+const sql_channel = `CREATE TABLE IF NOT EXISTS channels (
+    channelId INTEGER PRIMARY KEY,
+    channelName VARCHAR(20),
+    ownerId INTEGER,
+    FOREIGN KEY(ownerId) REFERENCES users(userId)
+) `;
+const sql_message = `CREATE TABLE IF NOT EXISTS messages (
+    messageId INTEGER PRIMARY KEY,
+    message TEXT,
+    createdAt DATE,
+    sender INTEGER,
+    receiver INTEGER,
+    FOREIGN KEY(sender) REFERENCES users(userId),
+    FOREIGN KEY(receiver) REFERENCES channels(channelId)
+)`;
 const sql_subscription = `CREATE TABLE IF NOT EXISTS subscriptions (
   userId INTEGER, channelId INTEGER, 
   PRIMARY KEY(userId, channelId),
@@ -57,7 +73,7 @@ const sql_subscription = `CREATE TABLE IF NOT EXISTS subscriptions (
   });
   return db;
 };
-initDatabase();
+
 
 module.exports = { initDatabase };
 
