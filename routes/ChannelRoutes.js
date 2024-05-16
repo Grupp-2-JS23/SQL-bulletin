@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const channelController = require('../controllers/channelController')
 
 router.get("/", (req, res) => {
     db.all("SELECT * FROM subscriptions", (err, rows) => {
@@ -12,12 +13,10 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
-    
-});
+router.post("/", channelController.createChannel);
 
-router.delete("/", (req, res) => {
-});
+/* router.delete("/", (req, res) => {
+}); */
 
 
 module.exports = router;

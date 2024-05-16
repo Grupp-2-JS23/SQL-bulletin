@@ -11,8 +11,8 @@ const db = database.initDatabase;
 
 app.use(express.json());
 
-app.use("/user", userRoutes);
-app.use("/channel", channelRoutes);
+app.use("/users", userRoutes);
+app.use("/channels", channelRoutes);
 // app.use("/message", messageRoutes);
 
 

@@ -56,19 +56,28 @@ const sql_message = `CREATE TABLE IF NOT EXISTS messages (
     createdAt DATE,
     sender INTEGER,
     receiver INTEGER,
-    FOREIGN KEY(sender) REFERENCES users(userId),
-    FOREIGN KEY(receiver) REFERENCES channels(channelId)
+    FOREIGN KEY(sender) REFERENCES users(userId)
+    
+)`;
+const sql_channelmessage = `CREATE TABLE IF NOT EXISTS channelmessages (
+  messageId INTEGER, 
+  channelId INTEGER, 
+  PRIMARY KEY(messageId, channelId),
+  FOREIGN KEY(messageId) REFERENCES messages(messageId),
+  FOREIGN KEY(channelId) REFERENCES channels(channelId)
 )`;
 const sql_subscription = `CREATE TABLE IF NOT EXISTS subscriptions (
   userId INTEGER, channelId INTEGER, 
   PRIMARY KEY(userId, channelId),
   FOREIGN KEY(userId) REFERENCES users(userId),
-  FOREIGN KEY(channelId) REFERENCES channels(channelId))`;
+  FOREIGN KEY(channelId) REFERENCES channels(channelId)
+)`;
 
   db.serialize(() => {
     createTable('users', sql_user);
     createTable('channels', sql_channel);
     createTable('messages', sql_message);
+    createTable('channelmessages', sql_channelmessage);
     createTable('subscriptions', sql_subscription);
   });
   return db;
@@ -76,5 +85,9 @@ const sql_subscription = `CREATE TABLE IF NOT EXISTS subscriptions (
 
 
 module.exports = { initDatabase };
+
+
+
+
 
 

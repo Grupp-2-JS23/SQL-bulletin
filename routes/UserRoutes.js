@@ -26,9 +26,7 @@ router.delete("/", (req, res) => {
 });
 
 
-
 module.exports = router;
 
 //sign up 
-//login 
-
+//
