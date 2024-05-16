@@ -58,7 +58,7 @@ const initDatabase = () => {
   const sql_message = `CREATE TABLE IF NOT EXISTS messages (
     messageId INTEGER PRIMARY KEY,
     message TEXT,
-    createdAt DATE,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     sender INTEGER,
     receiver INTEGER,
     FOREIGN KEY(sender) REFERENCES users(userId)
