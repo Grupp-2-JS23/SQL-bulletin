@@ -8,49 +8,54 @@
 //POST message
 
 const sqlite = require("sqlite3").verbose();
+const fs = require("fs");
+const path = "../database/database.db";
 
 const initDatabase = () => {
+  if (fs.existsSync(path)) return new sqlite.Database(path);
   const db = new sqlite.Database("./database/database.db", (error) => {
     if (error) {
       console.error("Error opening database:", error.message);
     } else {
       console.log("Connected to the SQLite database");
     }
-    
   });
+
   const createTable = (name, sql_text) => {
-  
-    db.get(`SELECT name FROM sqlite_master WHERE type = 'table' AND name= ? `,[name] ,(err, row) => {
-      if (err){
-        console.error(err);
-        return;
-      }
-      if (!row){
-        db.run(`${sql_text}`, (err) => {
-          if(err) { 
-            console.error('error creating table 😒', err);
-        } else {
-          console.log(`table ${name} created 😎`);
+    db.get(
+      `SELECT name FROM sqlite_master WHERE type = 'table' AND name= ? `,
+      [name],
+      (err, row) => {
+        if (err) {
+          console.error(err);
+          return;
         }
-        })
-      } else {
-        console.log(`table ${name} already exists 👍`);
-      };
-  
-  })
-  } 
-const sql_user = `CREATE TABLE IF NOT EXISTS users (
+        if (!row) {
+          db.run(`${sql_text}`, (err) => {
+            if (err) {
+              console.error("error creating table 😒", err);
+            } else {
+              console.log(`table ${name} created 😎`);
+            }
+          });
+        } else {
+          console.log(`table ${name} already exists 👍`);
+        }
+      }
+    );
+  };
+  const sql_user = `CREATE TABLE IF NOT EXISTS users (
     userId INTEGER PRIMARY KEY,
     userName VARCHAR(20),
     password TEXT
 ) `;
-const sql_channel = `CREATE TABLE IF NOT EXISTS channels (
+  const sql_channel = `CREATE TABLE IF NOT EXISTS channels (
     channelId INTEGER PRIMARY KEY,
     channelName VARCHAR(20),
     ownerId INTEGER,
     FOREIGN KEY(ownerId) REFERENCES users(userId)
 ) `;
-const sql_message = `CREATE TABLE IF NOT EXISTS messages (
+  const sql_message = `CREATE TABLE IF NOT EXISTS messages (
     messageId INTEGER PRIMARY KEY,
     message TEXT,
     createdAt DATE,
@@ -59,14 +64,14 @@ const sql_message = `CREATE TABLE IF NOT EXISTS messages (
     FOREIGN KEY(sender) REFERENCES users(userId)
     
 )`;
-const sql_channelmessage = `CREATE TABLE IF NOT EXISTS channelmessages (
+  const sql_channelmessage = `CREATE TABLE IF NOT EXISTS channelmessages (
   messageId INTEGER, 
   channelId INTEGER, 
   PRIMARY KEY(messageId, channelId),
   FOREIGN KEY(messageId) REFERENCES messages(messageId),
   FOREIGN KEY(channelId) REFERENCES channels(channelId)
 )`;
-const sql_subscription = `CREATE TABLE IF NOT EXISTS subscriptions (
+  const sql_subscription = `CREATE TABLE IF NOT EXISTS subscriptions (
   userId INTEGER, channelId INTEGER, 
   PRIMARY KEY(userId, channelId),
   FOREIGN KEY(userId) REFERENCES users(userId),
@@ -74,20 +79,14 @@ const sql_subscription = `CREATE TABLE IF NOT EXISTS subscriptions (
 )`;
 
   db.serialize(() => {
-    createTable('users', sql_user);
-    createTable('channels', sql_channel);
-    createTable('messages', sql_message);
-    createTable('channelmessages', sql_channelmessage);
-    createTable('subscriptions', sql_subscription);
+    createTable("users", sql_user);
+    createTable("channels", sql_channel);
+    createTable("messages", sql_message);
+    createTable("channelmessages", sql_channelmessage);
+    createTable("subscriptions", sql_subscription);
   });
+
   return db;
 };
 
-
 module.exports = { initDatabase };
-
-
-
-
-
-

@@ -15,11 +15,6 @@ app.use("/users", userRoutes);
 app.use("/channels", channelRoutes);
 // app.use("/message", messageRoutes);
 
-
-
 app.listen(PORT, URL, () => {
   console.log(`running at http://${URL}:${PORT} or http://localhost:${PORT}`);
 });
-
-
-
