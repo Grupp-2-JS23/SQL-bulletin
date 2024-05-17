@@ -1,10 +1,10 @@
 const sqlite = require("sqlite3").verbose();
 
 let dbInstance = null;
-
+//Initialises databases and creates the SQLite tables.
 const initDatabase = () => {
   if (dbInstance) {
-    return dbInstance; 
+    return dbInstance;
   }
 
   dbInstance = new sqlite.Database("./database/database.db", (error) => {
@@ -14,7 +14,7 @@ const initDatabase = () => {
       console.log("Connected to the SQLite database");
     }
   });
-
+  //checks if the tables already exist, if not creates them.
   const createTable = (name, sql_text) => {
     dbInstance.get(
       `SELECT name FROM sqlite_master WHERE type = 'table' AND name= ? `,
@@ -25,7 +25,7 @@ const initDatabase = () => {
           return;
         }
         if (!row) {
-          dbInstance.run(`${sql_text}`, (err) => { 
+          dbInstance.run(`${sql_text}`, (err) => {
             if (err) {
               console.error("error creating table 😒", err);
             } else {
@@ -83,5 +83,3 @@ const initDatabase = () => {
 };
 
 module.exports = { initDatabase };
-
-

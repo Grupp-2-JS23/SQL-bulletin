@@ -1,5 +1,6 @@
-const channelService = require('../services/channelService');
+const channelService = require("../services/channelService");
 
+//asynchronous function to handle POST request to create channel a channel with channelName and ownerId
 const createChannel = async (req, res) => {
   const { channelName, ownerId } = req.body;
   console.log(channelName, ownerId);
@@ -16,11 +17,15 @@ const createChannel = async (req, res) => {
   }
 };
 
+//asynchronous function to handle POST request to create subscription
 const createSubscription = async (req, res) => {
   const { userId, channelId } = req.body;
   console.log(req.body);
 
-  const validUserAndChannel = await channelService.isUserAndChannel(userId, channelId);
+  const validUserAndChannel = await channelService.isUserAndChannel(
+    userId,
+    channelId
+  );
   console.log("validuser", validUserAndChannel);
   console.log("userid, channelid", userId, channelId);
   if (!validUserAndChannel)
@@ -35,6 +40,5 @@ const createSubscription = async (req, res) => {
     res.status(500).json({ success: false, message: `${error.message}` });
   }
 };
-
 
 module.exports = { createChannel, createSubscription };

@@ -1,5 +1,6 @@
-const { addUser } = require('../services/userService')
+const { addUser } = require("../services/userService");
 
+//asynchronous function to handle POST request to create a user
 const createUser = async (req, res) => {
   const { userName, email } = req.body ?? {};
   console.log(userName, email);
@@ -13,6 +14,5 @@ const createUser = async (req, res) => {
     res.status(500).json({ success: false, message: `${error.message}` });
   }
 };
-
 
 module.exports = { createUser };
