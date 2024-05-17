@@ -1,19 +1,13 @@
-//Inloggnings endpoint
-//Sortering, meddelande, datum
-//POST username, password
-//POST user login
-//POST channel
-//GET chanel (se meddelanden)
-//POST subscribe
-//POST message
-
 const sqlite = require("sqlite3").verbose();
-const fs = require("fs");
-const path = "../database/database.db";
+
+let dbInstance = null;
 
 const initDatabase = () => {
-  if (fs.existsSync(path)) return new sqlite.Database(path);
-  const db = new sqlite.Database("./database/database.db", (error) => {
+  if (dbInstance) {
+    return dbInstance; 
+  }
+
+  dbInstance = new sqlite.Database("./database/database.db", (error) => {
     if (error) {
       console.error("Error opening database:", error.message);
     } else {
@@ -22,7 +16,7 @@ const initDatabase = () => {
   });
 
   const createTable = (name, sql_text) => {
-    db.get(
+    dbInstance.get(
       `SELECT name FROM sqlite_master WHERE type = 'table' AND name= ? `,
       [name],
       (err, row) => {
@@ -31,7 +25,7 @@ const initDatabase = () => {
           return;
         }
         if (!row) {
-          db.run(`${sql_text}`, (err) => {
+          dbInstance.run(`${sql_text}`, (err) => { 
             if (err) {
               console.error("error creating table 😒", err);
             } else {
@@ -47,7 +41,7 @@ const initDatabase = () => {
   const sql_user = `CREATE TABLE IF NOT EXISTS users (
     userId INTEGER PRIMARY KEY,
     userName VARCHAR(20),
-    password TEXT
+    email VARCHAR(255) NOT NULL
 ) `;
   const sql_channel = `CREATE TABLE IF NOT EXISTS channels (
     channelId INTEGER PRIMARY KEY,
@@ -60,7 +54,6 @@ const initDatabase = () => {
     message TEXT,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     sender INTEGER,
-    receiver INTEGER,
     FOREIGN KEY(sender) REFERENCES users(userId)
     
 )`;
@@ -78,7 +71,7 @@ const initDatabase = () => {
   FOREIGN KEY(channelId) REFERENCES channels(channelId)
 )`;
 
-  db.serialize(() => {
+  dbInstance.serialize(() => {
     createTable("users", sql_user);
     createTable("channels", sql_channel);
     createTable("messages", sql_message);
@@ -86,7 +79,9 @@ const initDatabase = () => {
     createTable("subscriptions", sql_subscription);
   });
 
-  return db;
+  return dbInstance;
 };
 
 module.exports = { initDatabase };
+
+
