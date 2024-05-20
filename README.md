@@ -13,7 +13,7 @@ Detta projekt skapar en SQLite3-databas och ett API för en enkel gruppfunktion,
 
 ## Gruppmedlemmar:
 
-_Linn Johansson, Paulius Kamuntavicius, Tobias Andersson, Daniel Budai_
+_Linn Johansson, Paulius Kamuntavicius, Tobias Andersson, Daniel Budai, Johan Skoog_
 
 # Links
 
